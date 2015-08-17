@@ -1,8 +1,7 @@
-package com.kaushiksamba.festemberapp;
+package com.festember.festemberapp;
 
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;

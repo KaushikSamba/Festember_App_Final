@@ -1,4 +1,4 @@
-package com.kaushiksamba.festemberapp;
+package com.festember.festemberapp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

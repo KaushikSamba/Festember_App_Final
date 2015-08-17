@@ -1,4 +1,4 @@
-package com.kaushiksamba.festemberapp;
+package com.festember.festemberapp;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -7,12 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,12 +28,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.w3c.dom.Text;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +62,7 @@ public class WelcomePage extends ActionBarActivity {
             }
         }
     }
+
     public static void addImageToGallery(final String filePath, final Context context) {
 
         ContentValues values = new ContentValues();
@@ -103,16 +98,25 @@ public class WelcomePage extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (Utilities.status != 2)
+            super.onBackPressed();
+        else finish();
+    }
+
     class myAsyncTask extends AsyncTask<String, Void, Bitmap> {
         ProgressDialog myPd_ring = null;
+
         @Override
         protected void onPreExecute() {
 
-            myPd_ring  = new ProgressDialog (WelcomePage.this);
+            myPd_ring = new ProgressDialog(WelcomePage.this);
             myPd_ring.setMessage("Loading...");
             myPd_ring.show();
 
         }
+
         @Override
         protected Bitmap doInBackground(String... strings) {
             HttpClient httpclient = new DefaultHttpClient();
@@ -122,7 +126,6 @@ public class WelcomePage extends ActionBarActivity {
                 List nameValuePairs = new ArrayList();
                 nameValuePairs.add(new BasicNameValuePair("user_name", Utilities.username));
                 nameValuePairs.add(new BasicNameValuePair("user_pass", Utilities.password));
-                Log.d("TAG", Utilities.username + " " + Utilities.password);
 
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 URL url2 = new URL(Utilities.url_qr);
@@ -133,7 +136,6 @@ public class WelcomePage extends ActionBarActivity {
                 httpEntity = response.getEntity();
                 byte[] img = EntityUtils.toByteArray(httpEntity);
                 image = BitmapFactory.decodeByteArray(img, 0, img.length);
-
 
 
             } catch (ClientProtocolException e) {
@@ -152,7 +154,7 @@ public class WelcomePage extends ActionBarActivity {
             save.saveToCacheFile(bmp);
             addImageToGallery(save.getCacheFilename(), WelcomePage.this);
 
-            Toast.makeText(WelcomePage.this, "Image Saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(WelcomePage.this, "Image saved to gallery", Toast.LENGTH_LONG).show();
         }
     }
 

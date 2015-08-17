@@ -1,4 +1,4 @@
-package com.kaushiksamba.festemberapp;
+package com.festember.festemberapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -25,7 +23,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +43,7 @@ public class ConfirmPage extends ActionBarActivity {
         TextView rollNumber = (TextView) findViewById(R.id.rollNumber);
         rollNumber.setText(Utilities.username);
         TextView coupon = (TextView) findViewById(R.id.coupon);
-        coupon.setText(Integer.toString(Utilities.amount));
+        coupon.setText("Rs. "+Integer.toString(Utilities.amount));
         if (Utilities.amount == 700) {
             LinearLayout genderLayout = (LinearLayout) findViewById(R.id.genderLayout);
             genderLayout.setVisibility(View.VISIBLE);

@@ -1,21 +1,13 @@
-package com.kaushiksamba.festemberapp;
+package com.festember.festemberapp;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
-import android.view.Display;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,8 +15,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
@@ -122,10 +112,8 @@ public class LoginActivity extends Activity {
                 HttpResponse response = httpclient.execute(httppost);
                 httpEntity = response.getEntity();
                 String s = EntityUtils.toString(httpEntity);
-                Log.e("TAG1", s);
                 try {
                     jsonObject = new JSONObject(s);
-                    Log.e("TAG2", s);
                     Utilities.status = jsonObject.getInt("auth");
                     error = jsonObject.getString("error");
                 } catch (JSONException e) {
