@@ -31,6 +31,8 @@ import java.util.List;
 
 public class ConfirmPage extends ActionBarActivity {
 
+    int NetworkState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +63,8 @@ public class ConfirmPage extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new myAsyncTask().execute();
-                button.setClickable(false);
+
+                new check_net_class().execute();
             }
         });
     }
@@ -94,42 +96,90 @@ public class ConfirmPage extends ActionBarActivity {
 
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 HttpResponse response = httpclient.execute(httppost);
-                httpEntity = response.getEntity();
-                String s = EntityUtils.toString(httpEntity);
-                try {
-                    jsonObject = new JSONObject(s);
-                    Utilities.status = jsonObject.getInt("auth") + 1;
-                    error = jsonObject.getString("error");
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    httpEntity = response.getEntity();
+                    String s = EntityUtils.toString(httpEntity);
+                    try {
+                        jsonObject = new JSONObject(s);
+                        Utilities.status = jsonObject.getInt("auth") + 1;
+                        error = jsonObject.getString("error");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }catch(ClientProtocolException e){
+                }catch(IOException e){
                 }
 
-
-            } catch (ClientProtocolException e) {
-            } catch (IOException e) {
-            }
             return error;
         }
 
         @Override
         protected void onPostExecute(String error) {
             super.onPostExecute(error);
-            myPd_ring.dismiss();
-            switch (Utilities.status) {
-                case 0:
-                    Toast.makeText(ConfirmPage.this, error, Toast.LENGTH_SHORT).show();
-                    break;
-                case 1:case 2:
-                    Intent i = new Intent(ConfirmPage.this, WelcomePage.class);
-                    SharedPreferences prefs = Utilities.prefs;
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putInt("status", Utilities.status);
-                    editor.apply();
-                    startActivity(i);
-                    finish();
-                    break;
+            if (NetworkState == 1) {
+                myPd_ring.dismiss();
+                switch (Utilities.status) {
+                    case 0:
+                        Toast.makeText(ConfirmPage.this, error, Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                    case 2:
+                        Intent i = new Intent(ConfirmPage.this, WelcomePage.class);
+                        SharedPreferences prefs = Utilities.prefs;
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putInt("status", Utilities.status);
+                        editor.apply();
+                        startActivity(i);
+                        finish();
+                        break;
+                }
             }
+            else
+            {
+                myPd_ring.dismiss();
+                Toast.makeText(ConfirmPage.this,"No Internet Access",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    class check_net_class extends AsyncTask<String,Void,String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpEntity httpEntity = null;
+            HttpPost httppost = new HttpPost("https://www.google.com");
+            JSONObject jsonObject;
+            String error = null;
+            try {
+                List nameValuePairs = new ArrayList();
+                nameValuePairs.add(new BasicNameValuePair("user_name", "hi"));
+
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+                HttpResponse response = httpclient.execute(httppost);
+                if (response == null) {
+                    NetworkState = 0;
+                }
+                else NetworkState=1;
+            }catch(ClientProtocolException e){
+            }catch(IOException e){
+            }
+
+            return error;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(NetworkState==0){
+                Toast.makeText(ConfirmPage.this,"No internet Access",Toast.LENGTH_LONG).show();
+            }
+            else {
+                new myAsyncTask().execute();
+            }
+
         }
     }
 }

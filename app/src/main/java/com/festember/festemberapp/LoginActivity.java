@@ -172,4 +172,17 @@ public class LoginActivity extends Activity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+
+
+
+    }
+
 }
