@@ -153,7 +153,6 @@ public class ConfirmPage extends ActionBarActivity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpEntity httpEntity = null;
             HttpPost httppost = new HttpPost("https://www.google.com");
-            JSONObject jsonObject;
             String error = null;
             try {
                 List nameValuePairs = new ArrayList();
