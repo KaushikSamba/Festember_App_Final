@@ -10,14 +10,6 @@
         android:topLeftRadius="20dp"
         android:topRightRadius="20dp" />
 
-    <gradient
-        android:angle="270"
-        android:endColor="#000000"
-        android:startColor="@color/festember_orange"
-        android:type="radial"
-        android:gradientRadius="80dp"
-        />
-
     <stroke
         android:width="4dp"
         android:color="@color/festember_orange" />

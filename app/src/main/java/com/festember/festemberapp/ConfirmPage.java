@@ -32,6 +32,7 @@ import java.util.List;
 public class ConfirmPage extends ActionBarActivity {
 
     int NetworkState;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class ConfirmPage extends ActionBarActivity {
         TextView rollNumber = (TextView) findViewById(R.id.rollNumber);
         rollNumber.setText(Utilities.username);
         TextView coupon = (TextView) findViewById(R.id.coupon);
-        coupon.setText("Rs. "+Integer.toString(Utilities.amount));
+        coupon.setText("Rs. " + Integer.toString(Utilities.amount));
         if (Utilities.amount == 700) {
             LinearLayout genderLayout = (LinearLayout) findViewById(R.id.genderLayout);
             genderLayout.setVisibility(View.VISIBLE);
@@ -59,26 +60,28 @@ public class ConfirmPage extends ActionBarActivity {
     }
 
     private void handleButtonClick() {
-        final Button button = (Button) findViewById(R.id.confirm);
+        button = (Button) findViewById(R.id.confirm);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 new check_net_class().execute();
+                button.setClickable(false);
             }
         });
     }
 
     class myAsyncTask extends AsyncTask<String, Void, String> {
         ProgressDialog myPd_ring = null;
+
         @Override
         protected void onPreExecute() {
 
-            myPd_ring  = new ProgressDialog (ConfirmPage.this);
+            myPd_ring = new ProgressDialog(ConfirmPage.this);
             myPd_ring.setMessage("Loading...");
             myPd_ring.show();
 
         }
+
         @Override
         protected String doInBackground(String... strings) {
             HttpClient httpclient = new DefaultHttpClient();
@@ -97,21 +100,21 @@ public class ConfirmPage extends ActionBarActivity {
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 HttpResponse response = httpclient.execute(httppost);
 
-                    httpEntity = response.getEntity();
-                    String s = EntityUtils.toString(httpEntity);
-                    try {
-                        jsonObject = new JSONObject(s);
-                        Utilities.status = jsonObject.getInt("auth") + 1;
-                        error = jsonObject.getString("error");
+                httpEntity = response.getEntity();
+                String s = EntityUtils.toString(httpEntity);
+                try {
+                    jsonObject = new JSONObject(s);
+                    Utilities.status = jsonObject.getInt("auth") + 1;
+                    error = jsonObject.getString("error");
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }catch(ClientProtocolException e){
-                }catch(IOException e){
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+
+
+            } catch (ClientProtocolException e) {
+            } catch (IOException e) {
+            }
 
             return error;
         }
@@ -127,24 +130,24 @@ public class ConfirmPage extends ActionBarActivity {
                         break;
                     case 1:
                     case 2:
-                        Intent i = new Intent(ConfirmPage.this, WelcomePage.class);
+                        //Intent i = new Intent(ConfirmPage.this, WelcomePage.class);
                         SharedPreferences prefs = Utilities.prefs;
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putInt("status", Utilities.status);
                         editor.apply();
-                        startActivity(i);
+                        //startActivity(i);
+                        setResult(1);
                         finish();
                         break;
                 }
-            }
-            else
-            {
+            } else {
                 myPd_ring.dismiss();
-                Toast.makeText(ConfirmPage.this,"No Internet Access",Toast.LENGTH_LONG).show();
+                Toast.makeText(ConfirmPage.this, "No Internet Access", Toast.LENGTH_LONG).show();
             }
         }
     }
-    class check_net_class extends AsyncTask<String,Void,String>{
+
+    class check_net_class extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             HttpClient httpclient = new DefaultHttpClient();
@@ -160,23 +163,20 @@ public class ConfirmPage extends ActionBarActivity {
                 HttpResponse response = httpclient.execute(httppost);
                 if (response == null) {
                     NetworkState = 0;
-                }
-                else NetworkState=1;
-            }catch(ClientProtocolException e){
-            }catch(IOException e){
+                } else NetworkState = 1;
+            } catch (ClientProtocolException e) {
+            } catch (IOException e) {
             }
-
             return error;
-
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(NetworkState==0){
-                Toast.makeText(ConfirmPage.this,"No internet Access",Toast.LENGTH_LONG).show();
-            }
-            else {
+            if (NetworkState == 0) {
+                Toast.makeText(ConfirmPage.this, "No internet access", Toast.LENGTH_LONG).show();
+                button.setClickable(true);
+            } else {
                 new myAsyncTask().execute();
             }
 
